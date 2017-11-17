@@ -1,13 +1,14 @@
 #include <iostream>
 #include "Piece.h"
 #include "Point.h"
+#include "Player.h"
 #include "Enumerations.h"
 
 using namespace std;
 
 int main()
 {
-	Piece *WPawn = new Piece(pawn, 2, 2, true);
+	/*Piece *WPawn = new Piece(pawn, 2, 2, true);
 	WPawn->getPos().print();
 	cout<<"ks\n";
 	Piece ***playerPieces = new Piece **[2];
@@ -29,6 +30,11 @@ int main()
 	Point *moveSet = WPawn->determineMoveSet(playerPieces);
 	for (int i = 0; i < 3; i++) {
 		moveSet[i].print();
-	}
-	
+	}*/
+	Player* plyr1 = new Player(true);
+	plyr1->setScore(11);
+	plyr1->setScore(20);
+	plyr1->printCards();
+	plyr1->playCard(0);
+	plyr1->printCards();
 }

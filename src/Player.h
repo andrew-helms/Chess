@@ -7,14 +7,15 @@
 class Player {
 private:
 	int score;
-	Piece ***playerPieces [16];
+	Piece *playerPieces [16];
+	Card *cards [3];
 
 public:
 	Player(bool isHuman);
 	int getScore();
 	void setScore(int scoreDiff);
-	void playCard(int index);
 	void printCards();
+	bool playCard(int index);
 };
 
 #endif
