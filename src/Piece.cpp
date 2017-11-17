@@ -86,7 +86,7 @@ Point Piece::getPos() {//Gets position
 	Determines the moveset of a piece based on enumeration
 
 	@param 	playerPieces: the array of all pieces on the board
-	@return an array of points where the piece is allowed to move
+	@return an array of points where the piece is allowed to move followed by Points of -1,-1
 */
 Point* Piece::determineMoveSet(Piece ***playerPieces) {
 	Point * possible;//the returned array for moveset
