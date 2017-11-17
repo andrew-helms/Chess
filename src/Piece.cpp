@@ -97,7 +97,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 	switch (bit) {
 
 	case king://iterates through a grid around the king and validates each point
-		possible = new Point[8];
+		possible = new Point[9];
 		for (int i = 0; i < 8; i++)//sets possible[] to (-1, -1)
 			possible[i] = Point(-1, -1);
 		ctr = 0;
@@ -114,11 +114,13 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 				endKing:
 				continue;
 			}
+
+		possible[8] = Point(-1, -1);
 		break;
 
 	case queen://iterates through 8 branches of possible movements until a piece
 		   //or the edge is encountered (anticlockwise from positive horizontal)
-		possible = new Point[27];
+		possible = new Point[28];
 		for (int i = 0; i < 27; i++)
 			possible[i] = Point(-1, -1);
 		ctr = 0;
@@ -263,11 +265,13 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 		}
 		endQ315:
 
+		possible[27] = Point(-1, -1);
+
 		break;
 
 	case rook://Finds the moveset for each branch radiating from the Rook until it hits
 		  //a piece or the edge of the board (anticlockwise from positive horizontal)
-		possible = new Point[14];
+		possible = new Point[15];
 		for (int i = 0; i < 14; i++)
 			possible[i] = Point(-1, -1);
 		ctr = 0;
@@ -336,11 +340,13 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 		}
 		end270:
 
+		possible[14] = Point(-1, -1);
+
 		break;
 
 	case bishop://Finds the moveset for each branch radiating from the bishop until it hits
 		    //a piece or the edge of the board (anticlockwise from positive / diagonal)
-		possible = new Point[13];
+		possible = new Point[14];
 		for (int i = 0; i < 13; i++)
 			possible[i] = Point(-1, -1);
 		ctr = 0;
@@ -421,10 +427,12 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 		}
 		end315:
 
+		possible[13] = Point(-1, -1);
+
 		break;
 
 	case knight://adds each possible knight movement if it's valid
-		possible = new Point[8];
+		possible = new Point[9];
 		for (int i = 0; i < 8; i++)
 			possible[i] = Point(-1, -1);
 		ctr = 0;
@@ -461,10 +469,12 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 		if (knightCheck(playerPieces, temp))
 			possible[ctr++] = temp;
 
+		possible[8] = Point(-1, -1);
+
 		break;
 
 	case pawn://adds each pawn movement if it's valid
-		possible = new Point[3];
+		possible = new Point[4];
 		for (int i = 0; i < 8; i++)
 			possible[i] = Point(-1, -1);
 		ctr = 0;
@@ -488,6 +498,9 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 				possible[ctr++] = temp;
 				break;
 			}
+
+		possible[3] = Point(-1, -1);
+
 		break;
 	}
 

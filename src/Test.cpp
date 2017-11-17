@@ -33,7 +33,7 @@ int main()
 	}*/
 	Player* plyr1 = new Player(true);
 	plyr1->setScore(11);
-	plyr1->setScore(20);
+	plyr1->setScore();
 	plyr1->printCards();
 	plyr1->playCard(0);
 	plyr1->printCards();
