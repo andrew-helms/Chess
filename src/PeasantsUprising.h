@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include "./Card.h"
-#include "./Player.cpp"
-#include "./Piece.cpp"
-#include "./Point.cpp"
+#include "./Player.h"
+#include "./Piece.h"
+#include "./Point.h"
 
 void printMenu();
 void printBoard();

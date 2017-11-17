@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "Piece.h"
+
 class Player {
 private:
 	int score;

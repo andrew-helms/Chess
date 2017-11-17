@@ -527,35 +527,47 @@ bool Piece::danger(Piece ***playerPieces, Point tip) {
 	
 	Piece fakeRook = Piece(rook, tip.x, tip.y, isHuman);//rook check
 	moveSet = fakeRook.determineMoveSet(playerPieces);	
-	for (int i = 0; i < 14; i++)
-		for (int j = 2; j < 4; j++)		
-			if (playerPieces[isHuman][j]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
+	for (int i = 0; i < 14; i++) {	
+			if (playerPieces[isHuman][0]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
 				move(were.x, were.y);
 				return true;
 			}
+			if (playerPieces[isHuman][7]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
+				move(were.x, were.y);
+				return true;
+			}
+	}
 	
 	Piece fakeBishop = Piece(bishop, tip.x, tip.y, isHuman);//bishop check
 	moveSet = fakeBishop.determineMoveSet(playerPieces);	
-	for (int i = 0; i < 13; i++)
-		for (int j = 4; j < 6; j++)		
-			if (playerPieces[isHuman][j]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
-				move(were.x, were.y);
-				return true;
-			}
+	for (int i = 0; i < 13; i++) {	
+		if (playerPieces[isHuman][2]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
+			move(were.x, were.y);
+			return true;
+		}
+		if (playerPieces[isHuman][5]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
+			move(were.x, were.y);
+			return true;
+		}
+	}
 
 	Piece fakeKnight = Piece(knight, tip.x, tip.y, isHuman);//knight check
 	moveSet = fakeKnight.determineMoveSet(playerPieces);	
-	for (int i = 0; i < 8; i++)
-		for (int j = 6; j < 8; j++)		
-			if (playerPieces[isHuman][j]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
-				move(were.x, were.y);
-				return true;
-			}
+	for (int i = 0; i < 8; i++){		
+		if (playerPieces[isHuman][1]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
+			move(were.x, were.y);
+			return true;
+		}
+		if (playerPieces[isHuman][6]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
+			move(were.x, were.y);
+			return true;
+		}
+	}
 
 	Piece fakeQueen = Piece(queen, tip.x, tip.y, isHuman);//queen check
 	moveSet = fakeQueen.determineMoveSet(playerPieces);	
 	for (int i = 0; i < 27; i++)		
-		if (playerPieces[isHuman][1]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
+		if (playerPieces[isHuman][3]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
 				move(were.x, were.y);
 				return true;
 			}
@@ -568,7 +580,7 @@ bool Piece::danger(Piece ***playerPieces, Point tip) {
 
 	for (int i = -1; i <= 1; i++)//king check
 		for (int j = -1; j <= 1; j++)
-			if (playerPieces[isHuman][0]->getPos().equals(Point(tip.x + i, tip.y + j))) {
+			if (playerPieces[isHuman][4]->getPos().equals(Point(tip.x + i, tip.y + j))) {
 				move(were.x, were.y);
 				return true;
 			}
@@ -595,7 +607,7 @@ bool Piece::discoverCheck(Piece ***playerPieces, Point tryMove) {
 		}
 	}
 
-	bool inDanger = playerPieces[!isHuman][0]->danger(playerPieces, playerPieces[!isHuman][0]->getPos());
+	bool inDanger = playerPieces[!isHuman][4]->danger(playerPieces, playerPieces[!isHuman][4]->getPos());
 	move(were.x, were.y);
 	if (j != 16)//Moves the enemy piece back if it was moved
 		playerPieces[isHuman][j]->move(tryMove.x, tryMove.y);
