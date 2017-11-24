@@ -12,6 +12,7 @@ class Piece {
 private:
 	Point pos;
 	bool knightCheck(Piece ***playerPieces, Point tip);
+	int score;
 public:
 
 	char symb;
@@ -20,11 +21,12 @@ public:
 	bool isHuman;
 	
 	Piece(Type type, int x, int y, bool isHuman);
-	void move(int x, int y);
+	void move(Piece ***playerPieces, int x, int y);
 	Point* determineMoveSet(Piece ***playerPieces);
 	Point getPos();
  	bool danger(Piece ***playerPieces, Point tip);
 	bool discoverCheck(Piece ***playerPieces, Point tryMove);
+	int getScore();
 };
 
 #endif

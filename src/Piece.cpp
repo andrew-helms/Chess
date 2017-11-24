@@ -29,6 +29,7 @@ Piece::Piece(Type type, int x, int y, bool isHuman) {
 			name = "Orc";
 		
 		symb = 'K';
+		score = 50;
 		break;
 	case queen:
 		if (isHuman)
@@ -37,6 +38,7 @@ Piece::Piece(Type type, int x, int y, bool isHuman) {
 			name = "Giant Troll";
 		
 		symb = 'Q';
+		score = 9;
 		break;
 	case bishop:
 		if (isHuman)
@@ -45,6 +47,7 @@ Piece::Piece(Type type, int x, int y, bool isHuman) {
 			name = "Warlock";
 
 		symb = 'B';
+		score = 3;
 		break;
 	case rook:
 		if (isHuman)
@@ -53,6 +56,7 @@ Piece::Piece(Type type, int x, int y, bool isHuman) {
 			name = "Demon";
 
 		symb = 'R';
+		score = 5;
 		break;
 	case knight:
 		if (isHuman)
@@ -61,6 +65,7 @@ Piece::Piece(Type type, int x, int y, bool isHuman) {
 			name = "Archerboi";
 
 		symb = 'N';
+		score = 3;
 		break;
 	case pawn:
 		if (isHuman)
@@ -69,11 +74,16 @@ Piece::Piece(Type type, int x, int y, bool isHuman) {
 			name = "Peon";
 
 		symb = 'P';
+		score = 1;
 		break;
 	}
 }
 
-void Piece::move(int x, int y) {//Sets position
+void Piece::move(Piece ***playerPieces, int x, int y) {//Sets position
+	for (int j = 0; j < 16; j++)
+		if(x >= 0 && playerPieces[isHuman][j]->getPos.x = x && playerPieces[isHuman][j]->getPos.y = y)
+			playerPieces[isHuman][j].move(playerPieces, -1, -1);
+
 	pos.x = x;
 	pos.y = y;
 }
@@ -625,6 +635,10 @@ bool Piece::discoverCheck(Piece ***playerPieces, Point tryMove) {
 	if (j != 16)//Moves the enemy piece back if it was moved
 		playerPieces[isHuman][j]->move(tryMove.x, tryMove.y);
 	return inDanger;
+}
+
+int Piece::getScore() {
+	return score;
 }
 
 
