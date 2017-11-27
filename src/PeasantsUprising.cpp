@@ -1,8 +1,7 @@
 #include "./PeasantsUprising.h"
 
-char board[8][8][2]; //Spaces that are not occupied will be ' '
-Player players[2] = {new Player(true), new Player(false)};
-bool empowered = false; //Tracks whether the empowered card is being played
+players[2] = {new Player(true), new Player(false)};
+empowered = false; //Tracks whether the empowered card is being played
 
 //King 8
 //Queen 27
