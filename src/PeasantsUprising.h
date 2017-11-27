@@ -12,5 +12,8 @@ void printBoard();
 Point* preview(Piece piece);
 void movePiece();
 void createBoard();
+void printScoreboard();
+string toLower(string s1);
+int boardSpotToNum(string s1);
 
 #endif
