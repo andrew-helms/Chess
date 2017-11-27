@@ -1,6 +1,6 @@
 #include "./PeasantsUprising.h"
 
-char board[8][8][2]; //Spaces that are not occupied will be NULL
+char board[8][8][2]; //Spaces that are not occupied will be ' '
 Player players[2] = {new Player(true), new Player(false)};
 bool empowered = false; //Tracks whether the empowered card is being played
 
@@ -159,8 +159,12 @@ void printBoard() {
 @return Point*: The pointer to the array of the spots the piece can move 
 */
 Point* preview(Piece piece) {
-	Player player = (piece.isHuman ? players[0] : players[1]);
-	Point* move = piece.determineMoveSet(player.getPieces()); //Will need to rework
+	Piece** pieces[2];
+	pieces[0] = players[0].getPieces();
+	pieces[1] = players[1].getPieces();	
+
+	Player plyr = players[!piece.isHuman];
+	Point* move = piece.determineMoveSet(pieces); //Will need to rework
 
 	Point comp; //Comparison point (used to test whether piece is on spot)
 	Point endPt = Point(-1, -1);
@@ -212,6 +216,13 @@ void movePiece() {
 /* This function fills the global board with the symbols for the initial piece positions
 */
 void createBoard() {
+	
+	//Sets all values to a space the will be overwritten later
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			for (int k = 0; k < 2; k++)
+				board[i][j][k] = ' ';
+
 	for (int i = 0; i < 8; i++) {
 		//Sets Human and Orc type
 		board[0][i][0] = 'O';
