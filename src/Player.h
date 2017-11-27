@@ -16,6 +16,7 @@ public:
 	void setScore(int scoreDiff);
 	void printCards();
 	bool playCard(int index);
+	Piece** getPieces();
 };
 
 #endif

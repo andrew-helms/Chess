@@ -5,10 +5,10 @@
 
 class Card {
 private:
+	CardType name;
 	
 public:
 	bool active;
-	CardType name;
 
 	Card(CardType kind);
 	bool playCard();

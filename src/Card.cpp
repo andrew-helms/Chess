@@ -14,4 +14,3 @@ bool Card::playCard() {
 	return false;
 }
 
-

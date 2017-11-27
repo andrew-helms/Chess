@@ -79,3 +79,6 @@ void Player::printCards() {
 		     (cards[2]->active ? "\\_____________/": "\\_____________/") << "\n";
 }
 
+Piece** Player::getPieces() {
+	return playerPieces;
+}

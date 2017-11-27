@@ -79,10 +79,10 @@ Piece::Piece(Type type, int x, int y, bool isHuman) {
 	}
 }
 
-void Piece::move(Piece ***playerPieces, int x, int y) {//Sets position
-	for (int j = 0; j < 16; j++)
+void Piece::move(Piece ***playerPieces, int x, int y) {//Sets position and captures if space is occupied
+	/*for (int j = 0; j < 16; j++)
 		if(x >= 0 && playerPieces[isHuman][j]->getPos.x = x && playerPieces[isHuman][j]->getPos.y = y)
-			playerPieces[isHuman][j].move(playerPieces, -1, -1);
+			playerPieces[isHuman][j].move(playerPieces, -1, -1);*/
 
 	pos.x = x;
 	pos.y = y;
@@ -545,18 +545,18 @@ bool Piece::danger(Piece ***playerPieces, Point tip) {
 		return false;	
 
 	Point were = pos;//saves current position
-	move(-1,-1);
+	move(playerPieces, -1, -1);
 	Point *moveSet;
 	
 	Piece fakeRook = Piece(rook, tip.x, tip.y, isHuman);//rook check
 	moveSet = fakeRook.determineMoveSet(playerPieces);	
 	for (int i = 0; i < 14; i++) {	
 			if (playerPieces[isHuman][0]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
-				move(were.x, were.y);
+				move(playerPieces, were.x, were.y);
 				return true;
 			}
 			if (playerPieces[isHuman][7]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
-				move(were.x, were.y);
+				move(playerPieces, were.x, were.y);
 				return true;
 			}
 	}
@@ -565,11 +565,11 @@ bool Piece::danger(Piece ***playerPieces, Point tip) {
 	moveSet = fakeBishop.determineMoveSet(playerPieces);	
 	for (int i = 0; i < 13; i++) {	
 		if (playerPieces[isHuman][2]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
-			move(were.x, were.y);
+			move(playerPieces, were.x, were.y);
 			return true;
 		}
 		if (playerPieces[isHuman][5]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
-			move(were.x, were.y);
+			move(playerPieces, were.x, were.y);
 			return true;
 		}
 	}
@@ -578,11 +578,11 @@ bool Piece::danger(Piece ***playerPieces, Point tip) {
 	moveSet = fakeKnight.determineMoveSet(playerPieces);	
 	for (int i = 0; i < 8; i++){		
 		if (playerPieces[isHuman][1]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
-			move(were.x, were.y);
+			move(playerPieces, were.x, were.y);
 			return true;
 		}
 		if (playerPieces[isHuman][6]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
-			move(were.x, were.y);
+			move(playerPieces, were.x, were.y);
 			return true;
 		}
 	}
@@ -591,23 +591,23 @@ bool Piece::danger(Piece ***playerPieces, Point tip) {
 	moveSet = fakeQueen.determineMoveSet(playerPieces);	
 	for (int i = 0; i < 27; i++)		
 		if (playerPieces[isHuman][3]->getPos().equals(moveSet[i]) && moveSet[i].onBoard()) {
-				move(were.x, were.y);
+				move(playerPieces, were.x, were.y);
 				return true;
 			}
 
 	for (int i = 8; i < 16; i++)//pawns check
 		if (playerPieces[isHuman][i]->getPos().equals(Point(tip.x, tip.y + (isHuman ? 1 : -1)))) {
-				move(were.x, were.y);
+				move(playerPieces, were.x, were.y);
 				return true;
 			}
 
 	for (int i = -1; i <= 1; i++)//king check
 		for (int j = -1; j <= 1; j++)
 			if (playerPieces[isHuman][4]->getPos().equals(Point(tip.x + i, tip.y + j))) {
-				move(were.x, were.y);
+				move(playerPieces, were.x, were.y);
 				return true;
 			}
-	move(were.x, were.y);
+	move(playerPieces, were.x, were.y);
 	return false;			
 }
 
@@ -620,20 +620,20 @@ bool Piece::danger(Piece ***playerPieces, Point tip) {
 */
 bool Piece::discoverCheck(Piece ***playerPieces, Point tryMove) {
 	Point were = pos;//Keeps the pieces current place
-	this->move(tryMove.x, tryMove.y);
+	this->move(playerPieces, tryMove.x, tryMove.y);
 	int j;
 
 	for (j = 0; j < 16; j++) {
 		if (playerPieces[isHuman][j]->getPos().equals(tryMove)) {
-			playerPieces[isHuman][j]->move(-1, -1);//temporarily captures piece occupying tryMove
+			playerPieces[isHuman][j]->move(playerPieces, -1, -1);//temporarily captures piece occupying tryMove
 			break;
 		}
 	}
 
 	bool inDanger = playerPieces[!isHuman][4]->danger(playerPieces, playerPieces[!isHuman][4]->getPos());
-	move(were.x, were.y);
+	move(playerPieces, were.x, were.y);
 	if (j != 16)//Moves the enemy piece back if it was moved
-		playerPieces[isHuman][j]->move(tryMove.x, tryMove.y);
+		playerPieces[isHuman][j]->move(playerPieces, tryMove.x, tryMove.y);
 	return inDanger;
 }
 

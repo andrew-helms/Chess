@@ -36,7 +36,7 @@ void printBoard() {
 		std::cout << ((i != 7) ? "\n  |----+----+----+----+----+----+----+----|\n" : "\n  +---------------------------------------+\n");
 	}
 
-	std::cout << "    A    B    C    D    E    F    G    H "; //Outputs the bottom of the board
+	std::cout << "    A    B    C    D    E    F    G    H \n"; //Outputs the bottom of the board
 }
 
 /* This function prints a preview board which showcases all of the possible spots a piece can move.
@@ -44,8 +44,12 @@ void printBoard() {
 @return Point*: The pointer to the array of the spots the piece can move 
 */
 Point* preview(Piece piece) {
-	Player plyr = (piece.isHuman ? players[0] : players[1]);
-	Point* move = piece.determineMoveSet(plyr.playerPieces); //Will need to rework
+	Piece** pieces[2];
+	pieces[0] = players[0].getPieces();
+	pieces[1] = players[1].getPieces();	
+
+	Player plyr = players[piece.isHuman];
+	Point* move = piece.determineMoveSet(pieces); //Will need to rework
 	Point m1 = move[1];
 	Point comp; //Comparison point (used to test whether piece is on spot)
 
@@ -89,6 +93,13 @@ void movePiece() {
 /* This function fills the global board with the symbols for the initial piece positions
 */
 void createBoard() {
+
+	//Sets all values to a space the will be overwritten later
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			for (int k = 0; k < 2; k++)
+				board[i][j][k] = ' ';
+
 	for (int i = 0; i < 8; i++) {
 		//Sets Human and Orc type
 		board[0][i][0] = 'O';

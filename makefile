@@ -28,4 +28,4 @@ cleanAll:
 	rm -f $(OBJS)
 
 clean:
-	rm -f $(OBJS) Peasants
+	rm -f $(OBJS) PeasantsUprising.out
