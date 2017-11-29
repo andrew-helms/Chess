@@ -9,21 +9,20 @@
 #include "./Enumerations.h"
 
 char board[8][8][2]; //Spaces that are not occupied will be ' '
-Player players[2] = { new Player(true), new Player(false) }; //Array for players. First is Humans
-Piece** pieces[2] = { players[0].getPieces(), players[1].getPieces() };
 bool empowered = false; //Tracks whether the empowered card is being played
+Player players[2] = { Player(true), Player(false) }; //Array for players. First is Humans
+Piece** pieces[2] = { players[0].getPieces(), players[1].getPieces() };
 
-void printMenu();
 void printBoard();
 Point* preview(Piece* piece);
 void createBoard();
-Piece* findPiece(Point spot);
+Piece* findPiece(Point spot, bool isHuman);
 void movePiece(Piece* piece, Point spot);
-bool spotOccupied(int spot);
+bool spotOccupied(Point spot);
 string toLower(string s1);
-int boardSpotToNum(string s1);
+Point boardSpotToPoint(string s1);
 void switchCard(Piece* piece1, Piece* piece2);
-void empowerCard();
+int empowerCard(Piece* piece);
 void reviveCard(Piece* res);
 
 #endif
