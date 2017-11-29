@@ -47,6 +47,95 @@ int main() {
 					std::cout << "\n\nCard - ";
 					std::cin >> input;
 					if (toLower(input) == "exit") return 0;
+
+					while ((input != "1" && input != "2" && input != "3") || (input == "1" && !cardsUnlocked[!humansTurn][0]) || (input == "2" && !cardsUnlocked[!humansTurn][1]) || (input == "3" && !cardsUnlocked[!humansTurn][2])) {
+						std::cout << "\nThat is not an option. Let's try that again\n\nCard - ";
+						std::cin >> input;
+						if (toLower(input) == "exit") return 0;
+					}
+
+					if (input == "1") { //Empower
+						empowered = true;
+						cardsPlayed[!humansTurn][0] = true;
+						cardsUnlocked[!humansTurn][0] = false;
+						players[!humansTurn].playCard(0);
+					} else if (input == "2") { //Switch
+						cardsPlayed[!humansTurn][1] = true;
+						cardsUnlocked[!humansTurn][1] = false;
+						players[!humansTurn].playCard(1);
+
+						std::cout << "\n\nFirst piece - ";
+						std::cin >> input;
+						if (toLower(input) == "exit") return 0;
+
+						Point piece1Loc = boardSpotToPoint(input);
+						Piece* piece1 = findPiece(piece1Loc, humansTurn);
+
+						//Loops until the user enters a piece
+						while (piece1Loc.x == -1 || piece1Loc.y == -1 || piece1 == NULL || piece1->bit == king) {
+							std::cout << "\nThat's not a valid piece. Let's try that again.\n\nFirst piece - ";
+							std::cin >> input;
+							if (toLower(input) == "exit") return 0;
+							piece1Loc = boardSpotToPoint(input);
+							piece1 = findPiece(piece1Loc, humansTurn);
+						}
+
+						std::cout << "\n\nSecond piece - ";
+						std::cin >> input;
+						if (toLower(input) == "exit") return 0;
+
+						Point piece2Loc = boardSpotToPoint(input);
+						Piece* piece2 = findPiece(piece2Loc, humansTurn);
+
+						//Loops until the user enters a piece
+						while (piece2Loc.x == -1 || piece2Loc.y == -1 || piece2 == NULL || piece2->bit == king || piece1Loc.equals(piece2Loc)) {
+							std::cout << "\nThat's not a valid piece. Let's try that again.\n\nSecond piece - ";
+							std::cin >> input;
+							if (toLower(input) == "exit") return 0;
+							piece2Loc = boardSpotToPoint(input);
+							piece2 = findPiece(piece2Loc, humansTurn);
+						}
+
+						switchCard(piece1, piece2);
+
+						humansTurn = !humansTurn;
+						std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
+						continue;
+					} else { //Revive
+						cardsPlayed[!humansTurn][2] = true;
+						cardsUnlocked[!humansTurn][2] = false;
+						players[!humansTurn].playCard(2);
+
+						std::cout << "\nPiece - ";
+						std::cin >> input;
+						input = toLower(input);
+						if (input == "exit") return 0;
+
+						Piece* piece = NULL;
+
+						//Loops through the player's pieces
+						for (int i = 0; i < 16; i++) {
+							if (input.length() == 2 && (input[0] == (humansTurn ? 'h' : 'o')) && pieces[!humansTurn][i]->getPos().equals(captureLoc) && pieces[!humansTurn][i]->symb == toupper(input[1])) piece = pieces[!humansTurn][i];
+						}
+
+						//Loops until the user enters a valid piece
+						while (piece == NULL || piece->bit == queen) {
+							std::cout << "\nThat's not a valid piece. Let's try that again.\n\nPiece - ";
+							std::cin >> input;
+							input = toLower(input);
+							if (input == "exit") return 0;
+
+							//Loops through the player's pieces
+							for (int i = 0; i < 16; i++) {
+								if (input.length() == 2 && (input[0] == (humansTurn ? 'h' : 'o')) && pieces[!humansTurn][i]->getPos().equals(captureLoc) && pieces[!humansTurn][i]->symb == toupper(input[1])) piece = pieces[!humansTurn][i];
+							}
+						}
+
+						reviveCard(piece);
+						humansTurn = !humansTurn;
+						std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
+						continue;
+					}
 				}
 
 				break;
@@ -66,8 +155,8 @@ int main() {
 		Piece* temp;
 		Point newLoc;
 
-		//Loops until the user enters a valid board space
-		while (pieceLoc.x == -1 || pieceLoc.y == -1 || piece == NULL) {
+		//Loops until the user enters piece
+		while (pieceLoc.x == -1 || pieceLoc.y == -1 || piece == NULL || (empowered && piece->bit == queen)) {
 			std::cout << "\nThat's not a valid piece. Let's try that again.\n\nPiece - ";
 			std::cin >> input;
 			if (toLower(input) == "exit") return 0;
@@ -100,23 +189,24 @@ int main() {
 				std::cout << "\nThese are the available spots for the " << piece->name << ":";
 				previewBoard(moves);
 			}
-		}
 
-		//Prompts to move this piece or to pick a different one
-		std::cout << "\n1. Move this piece\n2. Pick new piece\n\nChoice - ";
-		std::cin >> input;
-		if (toLower(input) == "exit") return 0;
-
-		//Loops until a valid choice has been entered
-		while (input != "1" && input != "2") {
-			std::cout << "\nThat was not an option. Let's try that again.\n\nChoice - ";
+			//Prompts to move this piece or to pick a different one
+			std::cout << "\n1. Move this piece\n2. Pick new piece\n\nChoice - ";
 			std::cin >> input;
 			if (toLower(input) == "exit") return 0;
-		}
-		
-		//Pick a different piece -> go back to the beginning of the loop
-		if (input == "2") continue;
 
+			//Loops until a valid choice has been entered
+			while (input != "1" && input != "2") {
+				std::cout << "\nThat was not an option. Let's try that again.\n\nChoice - ";
+				std::cin >> input;
+				if (toLower(input) == "exit") return 0;
+			}
+
+			//Pick a different piece -> go back to the beginning of the loop
+			if (input == "2") continue;
+		}
+
+		
 		//Gathers information on the spot to move to
 		std::cout << "\nSpot - ";
 		std::cin >> input;
@@ -157,19 +247,19 @@ int main() {
 			if (players[!humansTurn].getScore() >= 30) { //Revive threshold
 				if (!cardsPlayed[!humansTurn][2]) { //Revive not played
 					cardsUnlocked[!humansTurn][2] = true;
-					std::cout << "\nYay! You have unlocked a card.\n";
+					std::cout << "\nYay! You have unlocked Revive.\n";
 					players[!humansTurn].printCards();
 				}
 			} else if (players[!humansTurn].getScore() >= 20) { //Switch threshold
 				if (!cardsPlayed[!humansTurn][1]) { //Switch not played
 					cardsUnlocked[!humansTurn][1] = true;
-					std::cout << "\nYay! You have unlocked a card.\n";
+					std::cout << "\nYay! You have unlocked Switch.\n";
 					players[!humansTurn].printCards();
 				}
 			} else if (players[!humansTurn].getScore() >= 10) { //Empower threshold
 				if (!cardsPlayed[!humansTurn][0]) { //Empower not played
 					cardsUnlocked[!humansTurn][0] = true;
-					std::cout << "\nYay! You have unlocked a card.\n";
+					std::cout << "\nYay! You have unlocked Empower.\n";
 					players[!humansTurn].printCards();
 				}
 			}
