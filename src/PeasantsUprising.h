@@ -14,7 +14,7 @@ Player players[2] = { Player(true), Player(false) }; //Array for players. First 
 Piece** pieces[2] = { players[0].getPieces(), players[1].getPieces() };
 
 void printBoard();
-Point* preview(Piece* piece);
+void previewBoard(Point* move);
 void createBoard();
 Piece* findPiece(Point spot, bool isHuman);
 void movePiece(Piece* piece, Point spot);

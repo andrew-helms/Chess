@@ -1,29 +1,64 @@
 #include "./PeasantsUprising.h"
 
 //x -> horizontal, y -> vertical
+//board[] -> vertical, board[][] -> horizontal
+
+/* TODO:
+1) Fix issue with intially trying to move a Queen or Bishop
+2) Add Card UI
+*/
 
 int main() {
 	bool humansTurn = true;
+	bool cardsPlayed[2][3] = { {false, false, false}, {false, false, false} };
+	bool cardsUnlocked[2][3] = { { false, false, false }, { false, false, false } };
 	Point captureLoc= Point(-1, -1);
 	string input;
 	Point* moves;
 	int empoweredLoc;
 
-	std::cout << "Welcome to Peasant's Uprising!\n";
-
-	std::cout << "\nHumans start.";
+	std::cout << "Welcome to Peasant's Uprising!\n\nHumans start.";
 
 	createBoard();
 	printBoard();
 
-	std::cout << "Piece - ";
-
-	std::cin >> input;
-
-	input = toLower(input);
-
 	//Loops until user exits
 	while (input != "exit") {
+		//Loops to find if a card has been unlocked
+		for (int i = 0; i < 3; i++) {
+			//If the player has cards
+			if (cardsUnlocked[!humansTurn][i]) {
+				//Prompts for type of turn
+				std::cout << "\n1. Normal turn\n2. Play Card\n\nChoice - ";
+				std::cin >> input;
+				if (toLower(input) == "exit") return 0;
+
+				//Loops until the player enters a valid response
+				while (input != "1" && input != "2") {
+					std::cout << "\nThat was not an option. Let's try that again.\n\nChoice - ";
+					std::cin >> input;
+					if (toLower(input) == "exit") return 0;
+				}
+
+				//If the player wants to play a card
+				if (input == "2") {
+					players[!humansTurn].printCards();
+
+					std::cout << "\n\nCard - ";
+					std::cin >> input;
+					if (toLower(input) == "exit") return 0;
+				}
+
+				break;
+			}
+		}
+
+
+		std::cout << "\nPiece - ";
+		std::cin >> input;
+		input = toLower(input);
+		if (toLower(input) == "exit") return 0;
+
 		Point pieceLoc = boardSpotToPoint(input);
 		Piece* piece = findPiece(pieceLoc, humansTurn);
 		int movesTracker = 0;
@@ -33,24 +68,59 @@ int main() {
 
 		//Loops until the user enters a valid board space
 		while (pieceLoc.x == -1 || pieceLoc.y == -1 || piece == NULL) {
-			std::cout << "\nLet's try that again.\n\nPiece - ";
+			std::cout << "\nThat's not a valid piece. Let's try that again.\n\nPiece - ";
 			std::cin >> input;
+			if (toLower(input) == "exit") return 0;
 			pieceLoc = boardSpotToPoint(input);
 			piece = findPiece(pieceLoc, humansTurn);
 		}
 
-		if (empowered) { //If the empowered card is being played
-			temp = piece;
-			empoweredLoc = empowerCard(piece);
-			std::cout << "\nThese are the available spots for the " << temp->name << ":";
-			moves = preview(pieces[!temp->isHuman][empoweredLoc]);
-		} else {
-			std::cout << "\nThese are the available spots for the " << piece->name << ":";
-			moves = preview(piece);
+		//If the empowered card is being played
+		if (empowered) {
+			temp = piece; //Holds the original piece
+			empoweredLoc = empowerCard(piece); //Empowers the piece
+			moves = pieces[!temp->isHuman][empoweredLoc]->determineMoveSet(pieces); //Gets the possible moves
+
+			if (moves[0].equals(captureLoc)) { //If there are no available moves
+				std::cout << "\nThat piece cannot move. Let's try that again.\n";
+				continue;
+			} else {
+				std::cout << "\nThese are the available spots for the " << temp->name << ":";
+				previewBoard(moves);
+			}
+		} else { //A normal turn
+			moves = piece->determineMoveSet(pieces); //Gets the possible moves
+
+			if (moves[0].equals(captureLoc)) { //If there are no available moves
+				//Works for HK and HRs -> not HQ or HBs
+				//Works for OK and ORs -> not OQ or OBs
+				std::cout << "\nThat piece cannot move. Let's try that again.\n\n";
+				continue;
+			} else {
+				std::cout << "\nThese are the available spots for the " << piece->name << ":";
+				previewBoard(moves);
+			}
 		}
 
+		//Prompts to move this piece or to pick a different one
+		std::cout << "\n1. Move this piece\n2. Pick new piece\n\nChoice - ";
+		std::cin >> input;
+		if (toLower(input) == "exit") return 0;
+
+		//Loops until a valid choice has been entered
+		while (input != "1" && input != "2") {
+			std::cout << "\nThat was not an option. Let's try that again.\n\nChoice - ";
+			std::cin >> input;
+			if (toLower(input) == "exit") return 0;
+		}
+		
+		//Pick a different piece -> go back to the beginning of the loop
+		if (input == "2") continue;
+
+		//Gathers information on the spot to move to
 		std::cout << "\nSpot - ";
 		std::cin >> input;
+		if (toLower(input) == "exit") return 0;
 		newLoc = boardSpotToPoint(input);
 
 		//Loops until a valid move has been found
@@ -59,41 +129,69 @@ int main() {
 
 			//If at the end of the move set array (the entered space isn't a move)
 			if (moves[movesTracker].equals(captureLoc)) {
-				std::cout << "\nLet's try that again.\n\nPiece - ";
+				std::cout << "\nThat piece cannot move there. Let's try that again.\n\Spot - ";
 				std::cin >> input;
+				if (toLower(input) == "exit") return 0;
 				newLoc = boardSpotToPoint(input);
 				movesTracker = 0;
 			}
 		}
 
+		//Finds the theoretical piece to capture
 		capturePiece = findPiece(newLoc, !humansTurn);
 
 		//If there is a piece to be captured
 		if (capturePiece != NULL) {
 			movePiece(capturePiece, captureLoc);
 			players[!humansTurn].setScore(capturePiece->getScore());
+
+			//If a king has been captured
+			if (capturePiece->bit == king) {
+				movePiece(piece, newLoc);
+				printBoard();
+				std::cout << "\nCongratulations! " << (humansTurn ? "Humans" : "Orcz") << "have won the game.";
+				return 0;
+			}
+
+			//Unlocks cards
+			if (players[!humansTurn].getScore() >= 30) { //Revive threshold
+				if (!cardsPlayed[!humansTurn][2]) { //Revive not played
+					cardsUnlocked[!humansTurn][2] = true;
+					std::cout << "\nYay! You have unlocked a card.\n";
+					players[!humansTurn].printCards();
+				}
+			} else if (players[!humansTurn].getScore() >= 20) { //Switch threshold
+				if (!cardsPlayed[!humansTurn][1]) { //Switch not played
+					cardsUnlocked[!humansTurn][1] = true;
+					std::cout << "\nYay! You have unlocked a card.\n";
+					players[!humansTurn].printCards();
+				}
+			} else if (players[!humansTurn].getScore() >= 10) { //Empower threshold
+				if (!cardsPlayed[!humansTurn][0]) { //Empower not played
+					cardsUnlocked[!humansTurn][0] = true;
+					std::cout << "\nYay! You have unlocked a card.\n";
+					players[!humansTurn].printCards();
+				}
+			}
 		}
 
+		//Moves the piece
 		movePiece(piece, newLoc);
 
 		//If the empowered card is finished
 		if (empowered) {
-			empowered = false;
-			temp->move(pieces, newLoc.x, newLoc.y);
-			pieces[!temp->isHuman][empoweredLoc] = temp;
+			empowered = false; //Turns empower off
+			temp->move(pieces, newLoc.x, newLoc.y); //Updates the original piece
+			pieces[!humansTurn][empoweredLoc] = temp; //Resets the original piece
 		}
 
 		//CLEAR SCREEN HERE
 
-		humansTurn = !humansTurn; //Switches to the next player
+		//Switches to the next player
+		humansTurn = !humansTurn;
 
 		std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
-
 		printBoard();
-
-		std::cout << "\nPiece - ";
-		std::cin >> input;
-		input = toLower(input);
 	}
 
 	return 1;
@@ -178,20 +276,13 @@ void printBoard() {
 		std::cout << ((i != 7) ? "\n  |----+----+----+----+----+----+----+----|\n" : "\n  +---------------------------------------+\n");
 	}
 
-	std::cout << "    A    B    C    D    E    F    G    H\n\n"; //Outputs the bottom of the board
+	std::cout << "    A    B    C    D    E    F    G    H\n"; //Outputs the bottom of the board
 }
 
 /* This function prints a preview board which showcases all of the possible spots a piece can move.
-@param Piece: The piece to preview
-@return Point*: The pointer to the array of the spots the piece can move
+@param Point*: The array of moves to preview
 */
-Point* preview(Piece* piece) {
-	Piece** pieces[2];
-	pieces[0] = players[0].getPieces();
-	pieces[1] = players[1].getPieces();
-
-	Point* move = piece->determineMoveSet(pieces); //Will need to rework
-
+void previewBoard(Point* move) {
 	Point comp; //Comparison point (used to test whether piece is on spot)
 	Point endPt = Point(-1, -1);
 
@@ -201,13 +292,14 @@ Point* preview(Piece* piece) {
 	for (int i = 0; i < 8; i++) {
 		std::cout << (i + 1) << " |";
 		for (int j = 0; j < 8; j++) {
-			int k = 0;
-			bool matched = false;
+			int k = 0; //Tracks the position in move
+			bool matched = false; //Tracks if the current board spot is a move
 			comp.x = j;
 			comp.y = i;
 
+			//Loops through the available moves
 			while (!move[k].equals(endPt)) {
-				if (move[k].equals(comp)) {
+				if (move[k].equals(comp)) { //Outputs a move
 					if (board[i][j][0] == ' ') { //Empty spots are double spaced
 						std::cout << "xxxx|";
 					}
@@ -221,15 +313,13 @@ Point* preview(Piece* piece) {
 				k++;
 			}
 
-			if (!matched) std::cout << " " << board[i][j][0] << board[i][j][1] << " |";
+			if (!matched) std::cout << " " << board[i][j][0] << board[i][j][1] << " |"; //Outputs a normal space
 		}
 
 		std::cout << ((i != 7) ? "\n  |----+----+----+----+----+----+----+----|\n" : "\n  +---------------------------------------+\n");
 	}
 
 	std::cout << "    A    B    C    D    E    F    G    H\n"; //Outputs the bottom of the board
-
-	return move;
 }
 
 /* This function moves a piece to the given spot. It updates the piece's interal spot and the board. The space where the piece was originally is turned blank
