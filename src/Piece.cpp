@@ -525,7 +525,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 
 		bool flag = true;
 		temp = Point(pos.x - 1, pos.y + (isHuman ? -1 : 1));
-		if (!temp.onBoard()) break;
+
 		for (int j = 0; j < 16; j++)
 			if (!(temp.onBoard() && !playerPieces[isHuman][j]->getPos().equals(temp) && !playerPieces[!isHuman][j]->getPos().equals(temp) && !discoverCheck(playerPieces, temp))) {
 				flag = false;
@@ -543,19 +543,16 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 				break;
 			}
 
-		if (flag) 
+		if (flag) {
 			possible[ctr++] = temp;
+		}
 
-		flag = true;
 		temp = Point(pos.x, pos.y + (isHuman ? -1 : 1));
 		for (int j = 0; j < 16; j++)
-			if (!(temp.onBoard() && playerPieces[isHuman][j]->getPos().equals(temp) && !discoverCheck(playerPieces, temp))) {
-				flag = false;
+			if ((temp.onBoard() && playerPieces[isHuman][j]->getPos().equals(temp))) {
+				possible[ctr++] = temp;
 				break;
 			}
-
-		if (flag) 
-			possible[ctr++] = temp;
 
 		possible[3] = Point(-1, -1);
 

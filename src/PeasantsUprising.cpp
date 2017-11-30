@@ -180,7 +180,7 @@ int main() {
 			moves = piece->determineMoveSet(pieces); //Gets the possible moves
 
 			if (moves[0].equals(captureLoc)) { //If there are no available moves
-				std::cout << "\nThat piece cannot move. Let's try that again.\n\n";
+				std::cout << "\nThat piece cannot move. Let's try that again.\n";
 				continue;
 			} else {
 				std::cout << "\nThese are the available spots for the " << piece->name << ":";
@@ -235,7 +235,7 @@ int main() {
 			if (capturePiece->bit == king) {
 				movePiece(piece, newLoc);
 				printBoard();
-				std::cout << "\nCongratulations! " << (humansTurn ? "Humans" : "Orcz") << "have won the game.";
+				std::cout << "\nCongratulations! " << (humansTurn ? "Humans" : "Orcz") << " have won the game.\n";
 				return 0;
 			}
 
