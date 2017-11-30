@@ -180,7 +180,7 @@ int main() {
 			moves = piece->determineMoveSet(pieces); //Gets the possible moves
 
 			if (moves[0].equals(captureLoc)) { //If there are no available moves
-				std::cout << "\nThat piece cannot move. Let's try that again.\n";
+				std::cout << "\nThat piece cannot move. Let's try that again.\n\n";
 				continue;
 			} else {
 				std::cout << "\nThese are the available spots for the " << piece->name << ":";
@@ -235,7 +235,7 @@ int main() {
 			if (capturePiece->bit == king) {
 				movePiece(piece, newLoc);
 				printBoard();
-				std::cout << "\nCongratulations! " << (humansTurn ? "Humans" : "Orcz") << " have won the game.\n";
+				std::cout << "\nCongratulations! " << (humansTurn ? "Humans" : "Orcz") << "have won the game.";
 				return 0;
 			}
 
@@ -270,7 +270,7 @@ int main() {
 @return string: The lowercase string
 */
 string toLower(string s1) {
-	for (int i = 0; i < s1.length(); i++) {
+	for (unsigned int i = 0; i < s1.length(); i++) {
 		if (s1[i] >= 65 && s1[i] <= 90) s1[i] = tolower(s1[i]);
 	}
 
@@ -488,6 +488,8 @@ int empowerCard(Piece* piece) {
 			return i;
 		}
 	}
+
+	return -1;
 }
 
 /* This function brings the specified piece back to life in a spot in the first 2 rows.

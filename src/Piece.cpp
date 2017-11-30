@@ -79,9 +79,9 @@ Piece::Piece(Type type, int x, int y, bool isHuman) {
 
 void Piece::move(Piece ***playerPieces, int x, int y) {
 	//Sets position and captures if space is occupied
-													   /*for (int j = 0; j < 16; j++)
-													   if(x >= 0 && playerPieces[isHuman][j]->getPos.x = x && playerPieces[isHuman][j]->getPos.y = y)
-													   playerPieces[isHuman][j].move(playerPieces, -1, -1);*/
+	/*for (int j = 0; j < 16; j++)
+	   if(x >= 0 && playerPieces[isHuman][j]->getPos.x = x && playerPieces[isHuman][j]->getPos.y = y)
+		playerPieces[isHuman][j].move(playerPieces, -1, -1);*/
 
 	pos.x = x;
 	pos.y = y;
@@ -115,7 +115,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 				for (int m = 0; m < 16; m++)
 				{
 					temp = Point(pos.x + i, pos.y + j);
-					if (!(temp.onBoard() && !playerPieces[!isHuman][m]->getPos().equals(temp) && !danger(playerPieces, temp)))
+					if (!(temp.onBoard() && !playerPieces[!isHuman][m]->getPos().equals(temp)/* && !danger(playerPieces, temp)*/))
 						goto endKing;
 				}
 				possible[ctr++] = temp;
@@ -137,8 +137,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(i, pos.y);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto endQ0;
@@ -157,8 +157,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(i, k);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto endQ45;
@@ -177,8 +177,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(pos.x, i);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto endQ90;
@@ -198,8 +198,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(i, k);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto endQ135;
@@ -220,8 +220,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(i, pos.y);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto endQ180;
@@ -241,8 +241,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(i, k);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto endQ225;
@@ -263,8 +263,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(pos.x, i);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto endQ270;
@@ -284,8 +284,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(i, k);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto endQ315;
@@ -314,8 +314,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 
 		for (int i = pos.x + 1; i < 8; i++) {
 			temp = Point(i, pos.y);
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto end0;
@@ -330,8 +330,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 
 		for (int i = pos.y + 1; i < 8; i++) {
 			temp = Point(pos.x, i);
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto end90;
@@ -346,8 +346,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 
 		for (int i = pos.x - 1; i >= 0; i--) {
 			temp = Point(i, pos.y);
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto end180;
@@ -362,8 +362,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 
 		for (int i = pos.y - 1; i >= 0; i--) {
 			temp = Point(pos.x, i);
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto end270;
@@ -392,8 +392,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(i, k);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto end45;
@@ -413,8 +413,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(i, k);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto end135;
@@ -434,8 +434,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(i, k);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto end225;
@@ -455,8 +455,8 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			temp = Point(i, k);
 			if (!temp.onBoard()) break;
 
-			if (discoverCheck(playerPieces, temp))
-				continue;
+			/*if (discoverCheck(playerPieces, temp))
+				continue;*/
 			for (int j = 0; j < 16; j++) {
 				if (playerPieces[!isHuman][j]->getPos().equals(temp))
 					goto end315;
@@ -527,7 +527,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 		temp = Point(pos.x - 1, pos.y + (isHuman ? -1 : 1));
 
 		for (int j = 0; j < 16; j++)
-			if (!(temp.onBoard() && !playerPieces[isHuman][j]->getPos().equals(temp) && !playerPieces[!isHuman][j]->getPos().equals(temp) && !discoverCheck(playerPieces, temp))) {
+			if (!(temp.onBoard() && !playerPieces[isHuman][j]->getPos().equals(temp) && !playerPieces[!isHuman][j]->getPos().equals(temp)/* && !discoverCheck(playerPieces, temp)*/)) {
 				flag = false;
 				break;
 			}
@@ -538,18 +538,18 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 		flag = true;
 		temp = Point(pos.x + 1, pos.y + (isHuman ? -1 : 1));
 		for (int j = 0; j < 16; j++)
-			if (!(temp.onBoard() && !playerPieces[isHuman][j]->getPos().equals(temp) && !playerPieces[!isHuman][j]->getPos().equals(temp) && !discoverCheck(playerPieces, temp))) {
+			if (!(temp.onBoard() && !playerPieces[isHuman][j]->getPos().equals(temp) && !playerPieces[!isHuman][j]->getPos().equals(temp)/* && !discoverCheck(playerPieces, temp)*/)) {
 				flag = false;
 				break;
 			}
 
-		if (flag) {
+		if (flag) 
 			possible[ctr++] = temp;
-		}
 
+		flag = true;
 		temp = Point(pos.x, pos.y + (isHuman ? -1 : 1));
 		for (int j = 0; j < 16; j++)
-			if ((temp.onBoard() && playerPieces[isHuman][j]->getPos().equals(temp))) {
+			if (temp.onBoard() && playerPieces[isHuman][j]->getPos().equals(temp)/* && !discoverCheck(playerPieces, temp)*/) {
 				possible[ctr++] = temp;
 				break;
 			}
@@ -570,12 +570,14 @@ tip: the point being evaluated
 */
 bool Piece::knightCheck(Piece ***playerPieces, Point tip) {
 	for (int j = 0; j < 16; j++)
-		if (!(tip.onBoard() && !playerPieces[!isHuman][j]->getPos().equals(tip) && !discoverCheck(playerPieces, tip)))
+		if (!(tip.onBoard() && !playerPieces[!isHuman][j]->getPos().equals(tip)/* && !discoverCheck(playerPieces, tip)*/))
 			return false;
 	return true;
 }
 
-/*
+/* NOT IMPLEMENTED cry-frown-sad-bad-not-good
+The win condition is the king being captured, and this doesn't allow the game to progress if checkmate is achieved
+
 Checks if a point is capturable by making a fake piece at that position
 and then checking if an enemy of that piece type is within its
 moveset
@@ -654,7 +656,9 @@ bool Piece::danger(Piece ***playerPieces, Point tip) {
 	return false;
 }
 
-/*
+/*NOT IMPLEMENTED cry-frown-sad-bad-not-good
+The win condition is the king being captured, and this doesn't allow the game to progress if checkmate is achieved
+
 Checks if your king can be captured given a potential move
 @param 	playerPieces: the array of all pieces on the board
 tryMove: the movement being evaluated
