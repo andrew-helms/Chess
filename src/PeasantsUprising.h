@@ -9,7 +9,7 @@
 #include "./Enumerations.h"
 
 char board[8][8][2]; //Spaces that are not occupied will be ' '
-bool empowered = false; //Tracks whether the empowered card is being played
+bool empowered;
 Player players[2] = { Player(true), Player(false) }; //Array for players. First is Humans
 Piece** pieces[2] = { players[0].getPieces(), players[1].getPieces() };
 

@@ -3,15 +3,10 @@
 //x -> horizontal, y -> vertical
 //board[] -> vertical, board[][] -> horizontal
 
-/* TODO:
-1) Fix issue with intially trying to move a Queen or Bishop
-2) Add Card UI
-*/
-
 int main() {
+	empowered = false; //Tracks whether the empowered card is being played
+
 	bool humansTurn = true;
-	bool cardsPlayed[2][3] = { {false, false, false}, {false, false, false} };
-	bool cardsUnlocked[2][3] = { { false, false, false }, { false, false, false } };
 	Point captureLoc= Point(-1, -1);
 	string input;
 	Point* moves;
@@ -27,7 +22,7 @@ int main() {
 		//Loops to find if a card has been unlocked
 		for (int i = 0; i < 3; i++) {
 			//If the player has cards
-			if (cardsUnlocked[!humansTurn][i]) {
+			if (players[!humansTurn].getCards()[i]->active) {
 				//Prompts for type of turn
 				std::cout << "\n1. Normal turn\n2. Play Card\n\nChoice - ";
 				std::cin >> input;
@@ -48,7 +43,7 @@ int main() {
 					std::cin >> input;
 					if (toLower(input) == "exit") return 0;
 
-					while ((input != "1" && input != "2" && input != "3") || (input == "1" && !cardsUnlocked[!humansTurn][0]) || (input == "2" && !cardsUnlocked[!humansTurn][1]) || (input == "3" && !cardsUnlocked[!humansTurn][2])) {
+					while ((input != "1" && input != "2" && input != "3") || (input == "1" && !players[!humansTurn].getCards()[0]->active) || (input == "2" && !players[!humansTurn].getCards()[1]->active) || (input == "3" && !players[!humansTurn].getCards()[2]->active)) {
 						std::cout << "\nThat is not an option. Let's try that again\n\nCard - ";
 						std::cin >> input;
 						if (toLower(input) == "exit") return 0;
@@ -56,12 +51,12 @@ int main() {
 
 					if (input == "1") { //Empower
 						empowered = true;
-						cardsPlayed[!humansTurn][0] = true;
-						cardsUnlocked[!humansTurn][0] = false;
+						players[!humansTurn].getCards()[0]->played = true;
+						players[!humansTurn].getCards()[0]->active = false;
 						players[!humansTurn].playCard(0);
 					} else if (input == "2") { //Switch
-						cardsPlayed[!humansTurn][1] = true;
-						cardsUnlocked[!humansTurn][1] = false;
+						players[!humansTurn].getCards()[1]->played = true;
+						players[!humansTurn].getCards()[1]->active = false;
 						players[!humansTurn].playCard(1);
 
 						std::cout << "\n\nFirst piece - ";
@@ -72,7 +67,7 @@ int main() {
 						Piece* piece1 = findPiece(piece1Loc, humansTurn);
 
 						//Loops until the user enters a piece
-						while (piece1Loc.x == -1 || piece1Loc.y == -1 || piece1 == NULL || piece1->bit == king) {
+						while (!(piece1Loc.x != -1 && piece1Loc.y != -1 && piece1 != NULL && piece1->bit != king)) {
 							std::cout << "\nThat's not a valid piece. Let's try that again.\n\nFirst piece - ";
 							std::cin >> input;
 							if (toLower(input) == "exit") return 0;
@@ -88,7 +83,7 @@ int main() {
 						Piece* piece2 = findPiece(piece2Loc, humansTurn);
 
 						//Loops until the user enters a piece
-						while (piece2Loc.x == -1 || piece2Loc.y == -1 || piece2 == NULL || piece2->bit == king || piece1Loc.equals(piece2Loc)) {
+						while (!(piece2Loc.x != -1 && piece2Loc.y != -1 && piece2 != NULL && piece2->bit != king && !piece1Loc.equals(piece2Loc))) {
 							std::cout << "\nThat's not a valid piece. Let's try that again.\n\nSecond piece - ";
 							std::cin >> input;
 							if (toLower(input) == "exit") return 0;
@@ -102,8 +97,8 @@ int main() {
 						std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
 						continue;
 					} else { //Revive
-						cardsPlayed[!humansTurn][2] = true;
-						cardsUnlocked[!humansTurn][2] = false;
+						players[!humansTurn].getCards()[2]->played = true;
+						players[!humansTurn].getCards()[2]->active = false;
 						players[!humansTurn].playCard(2);
 
 						std::cout << "\nPiece - ";
@@ -119,7 +114,7 @@ int main() {
 						}
 
 						//Loops until the user enters a valid piece
-						while (piece == NULL || piece->bit == queen) {
+						while (!(piece != NULL && piece->bit != queen)) {
 							std::cout << "\nThat's not a valid piece. Let's try that again.\n\nPiece - ";
 							std::cin >> input;
 							input = toLower(input);
@@ -155,14 +150,18 @@ int main() {
 		Piece* temp;
 		Point newLoc;
 
+		std::cout << "hit1";
+
 		//Loops until the user enters piece
-		while (pieceLoc.x == -1 || pieceLoc.y == -1 || piece == NULL || (empowered && piece->bit == queen)) {
+		while (!(pieceLoc.x != -1 && pieceLoc.y != -1 && piece != NULL && (!empowered && piece->bit != queen))) {
 			std::cout << "\nThat's not a valid piece. Let's try that again.\n\nPiece - ";
 			std::cin >> input;
 			if (toLower(input) == "exit") return 0;
 			pieceLoc = boardSpotToPoint(input);
 			piece = findPiece(pieceLoc, humansTurn);
 		}
+
+		std::cout << "hit2";
 
 		//If the empowered card is being played
 		if (empowered) {
@@ -171,7 +170,7 @@ int main() {
 			moves = pieces[!temp->isHuman][empoweredLoc]->determineMoveSet(pieces); //Gets the possible moves
 
 			if (moves[0].equals(captureLoc)) { //If there are no available moves
-				std::cout << "\nThat piece cannot move. Let's try that again.\n";
+				std::cout << "\nThat piece cannot move. Let's try that again.";
 				continue;
 			} else {
 				std::cout << "\nThese are the available spots for the " << temp->name << ":";
@@ -181,8 +180,6 @@ int main() {
 			moves = piece->determineMoveSet(pieces); //Gets the possible moves
 
 			if (moves[0].equals(captureLoc)) { //If there are no available moves
-				//Works for HK and HRs -> not HQ or HBs
-				//Works for OK and ORs -> not OQ or OBs
 				std::cout << "\nThat piece cannot move. Let's try that again.\n\n";
 				continue;
 			} else {
@@ -219,7 +216,7 @@ int main() {
 
 			//If at the end of the move set array (the entered space isn't a move)
 			if (moves[movesTracker].equals(captureLoc)) {
-				std::cout << "\nThat piece cannot move there. Let's try that again.\n\Spot - ";
+				std::cout << "\nThat piece cannot move there. Let's try that again.\n\nSpot - ";
 				std::cin >> input;
 				if (toLower(input) == "exit") return 0;
 				newLoc = boardSpotToPoint(input);
@@ -243,26 +240,6 @@ int main() {
 				return 0;
 			}
 
-			//Unlocks cards
-			if (players[!humansTurn].getScore() >= 30) { //Revive threshold
-				if (!cardsPlayed[!humansTurn][2]) { //Revive not played
-					cardsUnlocked[!humansTurn][2] = true;
-					std::cout << "\nYay! You have unlocked Revive.\n";
-					players[!humansTurn].printCards();
-				}
-			} else if (players[!humansTurn].getScore() >= 20) { //Switch threshold
-				if (!cardsPlayed[!humansTurn][1]) { //Switch not played
-					cardsUnlocked[!humansTurn][1] = true;
-					std::cout << "\nYay! You have unlocked Switch.\n";
-					players[!humansTurn].printCards();
-				}
-			} else if (players[!humansTurn].getScore() >= 10) { //Empower threshold
-				if (!cardsPlayed[!humansTurn][0]) { //Empower not played
-					cardsUnlocked[!humansTurn][0] = true;
-					std::cout << "\nYay! You have unlocked Empower.\n";
-					players[!humansTurn].printCards();
-				}
-			}
 		}
 
 		//Moves the piece
@@ -389,6 +366,7 @@ void previewBoard(Point* move) {
 
 			//Loops through the available moves
 			while (!move[k].equals(endPt)) {
+
 				if (move[k].equals(comp)) { //Outputs a move
 					if (board[i][j][0] == ' ') { //Empty spots are double spaced
 						std::cout << "xxxx|";

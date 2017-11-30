@@ -7,8 +7,8 @@
 class Player {
 private:
 	int score;
-	Piece *playerPieces [16];
-	Card *cards [3];
+	Piece *playerPieces[16];
+	Card *cards[3];
 
 public:
 	Player(bool isHuman);
@@ -16,6 +16,7 @@ public:
 	void setScore(int scoreDiff);
 	void printCards();
 	bool playCard(int index);
+	Card** getCards();
 	Piece** getPieces();
 };
 
