@@ -3,11 +3,15 @@
 //x -> horizontal, y -> vertical
 //board[] -> vertical, board[][] -> horizontal
 
+/* TODO:
+Add backtracking within menu
+*/
+
 int main() {
 	empowered = false; //Tracks whether the empowered card is being played
 
 	bool humansTurn = true;
-	Point captureLoc= Point(-1, -1);
+	Point captureLoc = Point(-1, -1);
 	string input;
 	Point* moves;
 	int empoweredLoc;
@@ -54,7 +58,9 @@ int main() {
 						players[!humansTurn].getCards()[0]->played = true;
 						players[!humansTurn].getCards()[0]->active = false;
 						players[!humansTurn].playCard(0);
-					} else if (input == "2") { //Switch
+						break;
+					}
+					else if (input == "2") { //Switch
 						players[!humansTurn].getCards()[1]->played = true;
 						players[!humansTurn].getCards()[1]->active = false;
 						players[!humansTurn].playCard(1);
@@ -83,7 +89,7 @@ int main() {
 						Piece* piece2 = findPiece(piece2Loc, humansTurn);
 
 						//Loops until the user enters a piece
-						while (!(piece2Loc.x != -1 && piece2Loc.y != -1 && piece2 != NULL && piece2->bit != king && !piece1Loc.equals(piece2Loc))) {
+						while (!(piece2Loc.x != -1 && piece2Loc.y != -1 && piece2 != NULL && !piece1Loc.equals(piece2Loc))) {
 							std::cout << "\nThat's not a valid piece. Let's try that again.\n\nSecond piece - ";
 							std::cin >> input;
 							if (toLower(input) == "exit") return 0;
@@ -96,8 +102,9 @@ int main() {
 						humansTurn = !humansTurn;
 						std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
 						printBoard();
-						continue;
-					} else { //Revive
+						goto nextTurn;
+					}
+					else { //Revive
 						players[!humansTurn].getCards()[2]->played = true;
 						players[!humansTurn].getCards()[2]->active = false;
 						players[!humansTurn].playCard(2);
@@ -131,7 +138,7 @@ int main() {
 						humansTurn = !humansTurn;
 						std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
 						printBoard();
-						continue;
+						goto nextTurn;
 					}
 				}
 
@@ -154,7 +161,7 @@ int main() {
 		Point newLoc;
 
 		//Loops until the user enters piece
-		while (!(pieceLoc.x != -1 && pieceLoc.y != -1 && piece != NULL && (!empowered || piece->bit != queen))) {
+		while (!(pieceLoc.x != -1 && pieceLoc.y != -1 && piece != NULL && (!empowered && piece->bit == queen)) {
 			std::cout << "\nThat's not a valid piece. Let's try that again.\n\nPiece - ";
 			std::cin >> input;
 			if (toLower(input) == "exit") return 0;
@@ -172,17 +179,20 @@ int main() {
 			if (moves[0].equals(captureLoc)) { //If there are no available moves
 				std::cout << "\nThat piece cannot move. Let's try that again.";
 				continue;
-			} else {
+			}
+			else {
 				std::cout << "\nThese are the available spots for the " << temp->name << ":";
 				previewBoard(moves);
 			}
-		} else { //A normal turn
+		}
+		else { //A normal turn
 			moves = piece->determineMoveSet(pieces); //Gets the possible moves
 
 			if (moves[0].equals(captureLoc)) { //If there are no available moves
-				std::cout << "\nThat piece cannot move. Let's try that again.\n\n";
+				std::cout << "\nThat piece cannot move. Let's try that again.\n";
 				continue;
-			} else {
+			}
+			else {
 				std::cout << "\nThese are the available spots for the " << piece->name << ":";
 				previewBoard(moves);
 			}
@@ -202,7 +212,7 @@ int main() {
 			//Pick a different piece -> go back to the beginning of the loop
 			if (input == "2") continue;
 		}
-		
+
 		//Gathers information on the spot to move to
 		std::cout << "\nSpot - ";
 		std::cin >> input;
@@ -235,7 +245,7 @@ int main() {
 			if (capturePiece->bit == king) {
 				movePiece(piece, newLoc);
 				printBoard();
-				std::cout << "\nCongratulations! " << (humansTurn ? "Humans" : "Orcz") << "have won the game.";
+				std::cout << "\nCongratulations! " << (humansTurn ? "Humans" : "Orcz") << " have won the game.\n";
 				return 0;
 			}
 
@@ -253,13 +263,15 @@ int main() {
 			board[oldPos.y][oldPos.x][1] = ' '; //Resets the board
 		}
 
-		//CLEAR SCREEN HERE
+		std::cout << "-------------------------------------------";
 
 		//Switches to the next player
 		humansTurn = !humansTurn;
 
 		std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
 		printBoard();
+
+		nextTurn:
 	}
 
 	return 1;
@@ -288,17 +300,19 @@ Point boardSpotToPoint(string s1) {
 
 	if (s1.length() != 2) return Point(-1, -1); //If the input is not 2 characters
 
-	//Evaluates alphaphabetic characters
+												//Evaluates alphaphabetic characters
 	if (s1[0] >= 97 && s1[0] <= 104) {
 		spot.x = (int)(s1[0]) - 97;
-	} else {
+	}
+	else {
 		spot.x = -1;
 	}
 
 	//Evaluates numeric characters
 	if (s1[1] >= 49 && s1[1] <= 56) {
 		spot.y = (int)(s1[1]) - 49;
-	} else {
+	}
+	else {
 		spot.y = -1;
 	}
 
@@ -327,7 +341,7 @@ Piece* findPiece(Point spot, bool isHuman) {
 
 /* This function prints the board in its current state
 */
-void printBoard() { 
+void printBoard() {
 	//Prints the scoreboard
 	std::cout << "\n\n\tScore";
 	std::cout << "\nHumans\t" << players[0].getScore();
@@ -356,7 +370,7 @@ void previewBoard(Point* move) {
 
 	std::cout << "\n  +---------------------------------------+\n"; //outputs the first line of the board
 
-	//Loops through the board
+																	//Loops through the board
 	for (int i = 0; i < 8; i++) {
 		std::cout << (i + 1) << " |";
 		for (int j = 0; j < 8; j++) {
@@ -397,11 +411,12 @@ void previewBoard(Point* move) {
 */
 void movePiece(Piece* piece, Point spot) {
 	Point oldPos = piece->getPos(); //Tracks the old position
-	
-	//Moves the piece
+
+									//Moves the piece
 	if (spot.x == -1) { //if the piece is being captured
 		piece->move(pieces, -1, -1);
-	} else {
+	}
+	else {
 		piece->move(pieces, spot.x, spot.y);
 		board[spot.y][spot.x][0] = (piece->isHuman ? 'H' : 'O');
 		board[spot.y][spot.x][1] = piece->symb;
@@ -524,7 +539,7 @@ void reviveCard(Piece* res) {
 		if (pieces[!res->isHuman][i]->bit == res->bit && pieces[!res->isHuman][i]->getPos().x == -1) { //If the piece matches and is captured
 			pieces[!res->isHuman][i]->move(pieces, point.x, point.y); //Move the piece
 
-			//update the board
+																	  //update the board
 			board[point.y][point.x][0] = (res->isHuman ? 'H' : 'O');
 			board[point.y][point.x][1] = res->symb;
 		}
