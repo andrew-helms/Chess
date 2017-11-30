@@ -14,6 +14,10 @@ int main() {
 
 	std::cout << "Welcome to Peasant's Uprising!\n\nHumans start.";
 
+	players[0].setScore(10);
+	players[0].setScore(10);
+	players[0].setScore(10);
+
 	createBoard();
 	printBoard();
 
@@ -39,7 +43,7 @@ int main() {
 				if (input == "2") {
 					players[!humansTurn].printCards();
 
-					std::cout << "\n\nCard - ";
+					std::cout << "\nCard - ";
 					std::cin >> input;
 					if (toLower(input) == "exit") return 0;
 
@@ -59,7 +63,7 @@ int main() {
 						players[!humansTurn].getCards()[1]->active = false;
 						players[!humansTurn].playCard(1);
 
-						std::cout << "\n\nFirst piece - ";
+						std::cout << "\nFirst piece - ";
 						std::cin >> input;
 						if (toLower(input) == "exit") return 0;
 
@@ -75,7 +79,7 @@ int main() {
 							piece1 = findPiece(piece1Loc, humansTurn);
 						}
 
-						std::cout << "\n\nSecond piece - ";
+						std::cout << "\nSecond piece - ";
 						std::cin >> input;
 						if (toLower(input) == "exit") return 0;
 
@@ -95,6 +99,7 @@ int main() {
 
 						humansTurn = !humansTurn;
 						std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
+						printBoard();
 						continue;
 					} else { //Revive
 						players[!humansTurn].getCards()[2]->played = true;
@@ -129,6 +134,7 @@ int main() {
 						reviveCard(piece);
 						humansTurn = !humansTurn;
 						std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
+						printBoard();
 						continue;
 					}
 				}
@@ -148,12 +154,11 @@ int main() {
 		int movesTracker = 0;
 		Piece* capturePiece;
 		Piece* temp;
+		Point oldPos;
 		Point newLoc;
 
-		std::cout << "hit1";
-
 		//Loops until the user enters piece
-		while (!(pieceLoc.x != -1 && pieceLoc.y != -1 && piece != NULL && (!empowered && piece->bit != queen))) {
+		while (!(pieceLoc.x != -1 && pieceLoc.y != -1 && piece != NULL && (!empowered || piece->bit != queen))) {
 			std::cout << "\nThat's not a valid piece. Let's try that again.\n\nPiece - ";
 			std::cin >> input;
 			if (toLower(input) == "exit") return 0;
@@ -161,13 +166,12 @@ int main() {
 			piece = findPiece(pieceLoc, humansTurn);
 		}
 
-		std::cout << "hit2";
-
 		//If the empowered card is being played
 		if (empowered) {
-			temp = piece; //Holds the original piece
+			temp = piece;
+			oldPos = piece->getPos();
 			empoweredLoc = empowerCard(piece); //Empowers the piece
-			moves = pieces[!temp->isHuman][empoweredLoc]->determineMoveSet(pieces); //Gets the possible moves
+			moves = pieces[!piece->isHuman][empoweredLoc]->determineMoveSet(pieces); //Gets the possible moves
 
 			if (moves[0].equals(captureLoc)) { //If there are no available moves
 				std::cout << "\nThat piece cannot move. Let's try that again.";
@@ -202,7 +206,6 @@ int main() {
 			//Pick a different piece -> go back to the beginning of the loop
 			if (input == "2") continue;
 		}
-
 		
 		//Gathers information on the spot to move to
 		std::cout << "\nSpot - ";
@@ -250,6 +253,8 @@ int main() {
 			empowered = false; //Turns empower off
 			temp->move(pieces, newLoc.x, newLoc.y); //Updates the original piece
 			pieces[!humansTurn][empoweredLoc] = temp; //Resets the original piece
+			board[oldPos.y][oldPos.x][0] = ' '; //Resets the board
+			board[oldPos.y][oldPos.x][1] = ' '; //Resets the board
 		}
 
 		//CLEAR SCREEN HERE
@@ -501,7 +506,7 @@ void reviveCard(Piece* res) {
 	Point point; //Tracks the point of the piece
 	bool first2Rows = false; //Tracks whether the spot is in the first two rows
 
-	std::cout << "You may pick a spot in your first two rows.\nSpot - ";
+	std::cout << "\nYou may pick a spot in your first two rows.\n\nSpot - ";
 	std::cin >> stringSpot;
 
 	point = boardSpotToPoint(stringSpot);
