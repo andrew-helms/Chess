@@ -127,7 +127,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 		break;
 
 	case queen://iterates through 8 branches of possible movements until a piece
-			   //or the edge is encountered (anticlockwise from positive horizontal)
+		   //or the edge is encountered (anticlockwise from positive horizontal)
 		possible = new Point[28];
 		for (int i = 0; i < 27; i++)
 			possible[i] = Point(-1, -1);
@@ -150,7 +150,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 
 			possible[ctr++] = temp;
 		}
-	endQ0:
+		endQ0://End of for loop iterating East
 
 		k = pos.y + 1;
 		for (int i = pos.x + 1; i < 8; i++) {
@@ -171,7 +171,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			if (++k >= 8)
 				break;
 		}
-	endQ45:
+		endQ45://End of for loop iterating Northeast
 
 		for (int i = pos.y + 1; i < 8; i++) {
 			temp = Point(pos.x, i);
@@ -191,7 +191,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			possible[ctr++] = temp;
 
 		}
-	endQ90:
+		endQ90://End of for loop iterating North
 
 		k = pos.y + 1;
 		for (int i = pos.x - 1; i >= 0; i--) {
@@ -214,7 +214,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			if (++k >= 8)
 				break;
 		}
-	endQ135:
+		endQ135://End of for loop iterating Northwest
 
 		for (int i = pos.x - 1; i >= 0; i--) {
 			temp = Point(i, pos.y);
@@ -234,7 +234,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			possible[ctr++] = temp;
 
 		}
-	endQ180:
+		endQ180://End of for loop iterating West
 
 		k = pos.y - 1;
 		for (int i = pos.x - 1; i >= 0; i--) {
@@ -257,7 +257,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			if (--k < 0)
 				break;
 		}
-	endQ225:
+		endQ225://End of for loop iterating Southwest
 
 		for (int i = pos.y - 1; i >= 0; i--) {
 			temp = Point(pos.x, i);
@@ -277,7 +277,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			possible[ctr++] = temp;
 
 		}
-	endQ270:
+		endQ270://End of for loop iterating South
 
 		k = pos.y - 1;
 		for (int i = pos.x + 1; i < 8; i++) {
@@ -299,7 +299,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			if (--k < 0)
 				break;
 		}
-	endQ315:
+		endQ315://End of for loop iterating Southeast
 
 		possible[27] = Point(-1, -1);
 
@@ -326,7 +326,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			}
 			possible[ctr++] = temp;
 		}
-	end0:
+		end0://End of for loop iterating East
 
 		for (int i = pos.y + 1; i < 8; i++) {
 			temp = Point(pos.x, i);
@@ -342,7 +342,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			}
 			possible[ctr++] = temp;
 		}
-	end90:
+		end90://End of for loop iterating North
 
 		for (int i = pos.x - 1; i >= 0; i--) {
 			temp = Point(i, pos.y);
@@ -358,7 +358,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			}
 			possible[ctr++] = temp;
 		}
-	end180:
+		end180://End of for loop iterating West
 
 		for (int i = pos.y - 1; i >= 0; i--) {
 			temp = Point(pos.x, i);
@@ -374,7 +374,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			}
 			possible[ctr++] = temp;
 		}
-	end270:
+		end270://End of for loop iterating South
 
 		possible[14] = Point(-1, -1);
 
@@ -406,7 +406,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			if (++k >= 8)
 				break;
 		}
-	end45:
+		end45://End of for loop iterating Northeast
 
 		k = pos.y + 1;
 		for (int i = pos.x - 1; i >= 0; i--) {
@@ -427,7 +427,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			if (++k >= 8)
 				break;
 		}
-	end135:
+		end135://End of for loop iterating Northwest
 
 		k = pos.y - 1;
 		for (int i = pos.x - 1; i >= 0; i--) {
@@ -448,7 +448,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			if (--k < 0)
 				break;
 		}
-	end225:
+		end225://End of for loop iterating Southwest
 
 		k = pos.y - 1;
 		for (int i = pos.x + 1; i < 8; i++) {
@@ -469,7 +469,7 @@ Point* Piece::determineMoveSet(Piece ***playerPieces) {
 			if (--k < 0)
 				break;
 		}
-	end315:
+		end315://End of for loop iterating Southeast
 
 		possible[13] = Point(-1, -1);
 
