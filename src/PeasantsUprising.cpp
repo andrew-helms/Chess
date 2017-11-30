@@ -14,7 +14,14 @@ int main() {
 	Point captureLoc = Point(-1, -1);
 	string input;
 	Point* moves;
+	Point pieceLoc;
+	Piece* piece;
 	int empoweredLoc;
+	Piece* capturePiece;
+	Piece* temp;
+	Point oldPos;
+	Point newLoc;
+	int movesTracker;
 
 	std::cout << "Welcome to Peasant's Uprising!\n\nHumans start.";
 
@@ -73,7 +80,7 @@ int main() {
 						Piece* piece1 = findPiece(piece1Loc, humansTurn);
 
 						//Loops until the user enters a piece
-						while (!(piece1Loc.x != -1 && piece1Loc.y != -1 && piece1 != NULL && piece1->bit != king)) {
+						while (!(piece1Loc.x != -1 && piece1Loc.y != -1 && piece1 != NULL)) {
 							std::cout << "\nThat's not a valid piece. Let's try that again.\n\nFirst piece - ";
 							std::cin >> input;
 							if (toLower(input) == "exit") return 0;
@@ -99,9 +106,6 @@ int main() {
 
 						switchCard(piece1, piece2);
 
-						humansTurn = !humansTurn;
-						std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
-						printBoard();
 						goto nextTurn;
 					}
 					else { //Revive
@@ -135,9 +139,6 @@ int main() {
 						}
 
 						reviveCard(piece);
-						humansTurn = !humansTurn;
-						std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
-						printBoard();
 						goto nextTurn;
 					}
 				}
@@ -152,16 +153,12 @@ int main() {
 		input = toLower(input);
 		if (toLower(input) == "exit") return 0;
 
-		Point pieceLoc = boardSpotToPoint(input);
-		Piece* piece = findPiece(pieceLoc, humansTurn);
-		int movesTracker = 0;
-		Piece* capturePiece;
-		Piece* temp;
-		Point oldPos;
-		Point newLoc;
+		pieceLoc = boardSpotToPoint(input);
+		piece = findPiece(pieceLoc, humansTurn);
+		movesTracker = 0;
 
 		//Loops until the user enters piece
-		while (!(pieceLoc.x != -1 && pieceLoc.y != -1 && piece != NULL && (!empowered && piece->bit == queen)) {
+		while (!(pieceLoc.x != -1 && pieceLoc.y != -1 && piece != NULL && (!empowered || piece->bit != queen))) {
 			std::cout << "\nThat's not a valid piece. Let's try that again.\n\nPiece - ";
 			std::cin >> input;
 			if (toLower(input) == "exit") return 0;
@@ -263,15 +260,15 @@ int main() {
 			board[oldPos.y][oldPos.x][1] = ' '; //Resets the board
 		}
 
-		std::cout << "-------------------------------------------";
+		std::cout << "\n-------------------------------------------\n";
 
-		//Switches to the next player
-		humansTurn = !humansTurn;
-
-		std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
-		printBoard();
-
+		//Defines how to handle the next turn
 		nextTurn:
+			humansTurn = !humansTurn;
+			std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
+			printBoard();
+
+
 	}
 
 	return 1;
@@ -300,7 +297,7 @@ Point boardSpotToPoint(string s1) {
 
 	if (s1.length() != 2) return Point(-1, -1); //If the input is not 2 characters
 
-												//Evaluates alphaphabetic characters
+	//Evaluates alphaphabetic characters
 	if (s1[0] >= 97 && s1[0] <= 104) {
 		spot.x = (int)(s1[0]) - 97;
 	}
