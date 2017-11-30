@@ -14,10 +14,6 @@ int main() {
 
 	std::cout << "Welcome to Peasant's Uprising!\n\nHumans start.";
 
-	players[0].setScore(10);
-	players[0].setScore(10);
-	players[0].setScore(10);
-
 	createBoard();
 	printBoard();
 
