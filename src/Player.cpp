@@ -46,22 +46,24 @@ int Player::getScore() {
 void Player::setScore(int scoreDiff) {
 	score += scoreDiff;
 
-	//If the score is above 30 (Revive unlocked) and Revive has not already been played
-	if (score >= 30 && !cards[2]->played && !cards[2]->active) {
-		cards[2]->active = true;
-		std::cout << "\nYay! You have unlocked Revive.\n";
+	//If the score is above 10 (Empower unlocked) and Empower has not already been played
+	if (score >= 10 && !cards[0]->played && !cards[0]->active) { 
+		cards[0]->active = true;
+		std::cout << "\nYay! You have unlocked Empower.\n";
 		printCards();
 	}
 
-	else if (score >= 20 && !cards[1]->played && !cards[1]->active) { //If the score is above 20 (Switch unlocked) and Switch has not already been played
+	//If the score is above 20 (Switch unlocked) and Switch has not already been played
+	if (score >= 20 && !cards[1]->played && !cards[1]->active) { 
 		cards[1]->active = true;
 		std::cout << "\nYay! You have unlocked Switch.\n";
 		printCards();
 	}
 
-	else if (score >= 10 && !cards[0]->played && !cards[0]->active) { //If the score is above 10 (Empower unlocked) and Empower has not already been played
-		cards[0]->active = true;
-		std::cout << "\nYay! You have unlocked Empower.\n";
+	//If the score is above 30 (Revive unlocked) and Revive has not already been played
+	if (score >= 30 && !cards[2]->played && !cards[2]->active) {
+		cards[2]->active = true;
+		std::cout << "\nYay! You have unlocked Revive.\n";
 		printCards();
 	}
 }
