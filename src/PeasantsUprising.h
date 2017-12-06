@@ -8,11 +8,13 @@
 #include "./Point.h"
 #include "./Enumerations.h"
 
-char board[8][8][2]; //Spaces that are not occupied will be ' '
+//Global variables
+char board[8][8][2]; //Spaces that are not occupied will be ' '; [] is vertical [][] horizontal
 bool empowered;
-Player players[2] = { Player(true), Player(false) }; //Array for players. First is Humans
-Piece** pieces[2] = { players[0].getPieces(), players[1].getPieces() };
+Player* players[2] = { NULL, NULL };
+Piece** pieces[2] = {NULL, NULL};
 
+//Functions
 void printBoard();
 void previewBoard(Point* move);
 void createBoard();

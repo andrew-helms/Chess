@@ -1,27 +1,31 @@
-#include "./PeasantsUprising.h"
-
-//x -> horizontal, y -> vertical
-//board[] -> vertical, board[][] -> horizontal
-
-/* TODO:
-Add backtracking within menu
+/* 
+COP3503 Final Project, PeasantsUpring.cpp
+Purpose: Create game flow and interact with user
+@authors: Mikayla Crawford and Alex Prascak
 */
 
-int main() {
-	empowered = false; //Tracks whether the empowered card is being played
+#include "./PeasantsUprising.h"
 
-	bool humansTurn = true;
-	Point captureLoc = Point(-1, -1);
-	string input;
-	Point* moves;
-	Point pieceLoc;
-	Piece* piece;
-	int empoweredLoc;
-	Piece* capturePiece;
-	Piece* temp;
-	Point oldPos;
-	Point newLoc;
-	int movesTracker;
+int main() {
+	//Global definitions
+	empowered = false; //Tracks whether the empowered card is being played
+	players[0] = new Player(true); //Human player
+	players[1] = new Player(false); //Orc player
+	pieces[0] = players[0]->getPieces(); //Human pieces
+	pieces[1] = players[1]->getPieces(); //Orc pieces
+
+	bool humansTurn = true; //Tracks whether it is the humans turn
+	Point captureLoc = Point(-1, -1); //Capture location (all captured points are sent to (-1, -1))
+	string input; //Tracks the users input
+	Point* moves; //Tracks a pieces possible moves
+	Point pieceLoc; //Tracks the current location of a piece
+	Piece* piece; //Tracks a piece
+	int empoweredLoc; //Tracks the index of an empowered piece
+	Piece* capturePiece; //Tracks a captured piece
+	Piece* temp; //Temporary piece
+	Point oldPos; //Tracks the old piece position
+	Point newLoc; //Tracks the new piece position
+	int movesTracker; //Tracks the index in moves
 
 	std::cout << "Welcome to Peasant's Uprising!\n\nHumans start.";
 
@@ -33,7 +37,7 @@ int main() {
 		//Loops to find if a card has been unlocked
 		for (int i = 0; i < 3; i++) {
 			//If the player has cards
-			if (players[!humansTurn].getCards()[i]->active) {
+			if (players[!humansTurn]->getCards()[i]->active) {
 				//Prompts for type of turn
 				std::cout << "\n1. Normal turn\n2. Play Card\n\nChoice - ";
 				std::cin >> input;
@@ -48,13 +52,13 @@ int main() {
 
 				//If the player wants to play a card
 				if (input == "2") {
-					players[!humansTurn].printCards();
+					players[!humansTurn]->printCards();
 
 					std::cout << "\nCard - ";
 					std::cin >> input;
 					if (toLower(input) == "exit") return 0;
 
-					while ((input != "1" && input != "2" && input != "3") || (input == "1" && !players[!humansTurn].getCards()[0]->active) || (input == "2" && !players[!humansTurn].getCards()[1]->active) || (input == "3" && !players[!humansTurn].getCards()[2]->active)) {
+					while ((input != "1" && input != "2" && input != "3") || (input == "1" && !players[!humansTurn]->getCards()[0]->active) || (input == "2" && !players[!humansTurn]->getCards()[1]->active) || (input == "3" && !players[!humansTurn]->getCards()[2]->active)) {
 						std::cout << "\nThat is not an option. Let's try that again\n\nCard - ";
 						std::cin >> input;
 						if (toLower(input) == "exit") return 0;
@@ -62,15 +66,15 @@ int main() {
 
 					if (input == "1") { //Empower
 						empowered = true;
-						players[!humansTurn].getCards()[0]->played = true;
-						players[!humansTurn].getCards()[0]->active = false;
-						players[!humansTurn].playCard(0);
+						players[!humansTurn]->getCards()[0]->played = true;
+						players[!humansTurn]->getCards()[0]->active = false;
+						players[!humansTurn]->playCard(0);
 						break;
 					}
 					else if (input == "2") { //Switch
-						players[!humansTurn].getCards()[1]->played = true;
-						players[!humansTurn].getCards()[1]->active = false;
-						players[!humansTurn].playCard(1);
+						players[!humansTurn]->getCards()[1]->played = true;
+						players[!humansTurn]->getCards()[1]->active = false;
+						players[!humansTurn]->playCard(1);
 
 						std::cout << "\nFirst piece - ";
 						std::cin >> input;
@@ -109,9 +113,9 @@ int main() {
 						goto nextTurn;
 					}
 					else { //Revive
-						players[!humansTurn].getCards()[2]->played = true;
-						players[!humansTurn].getCards()[2]->active = false;
-						players[!humansTurn].playCard(2);
+						players[!humansTurn]->getCards()[2]->played = true;
+						players[!humansTurn]->getCards()[2]->active = false;
+						players[!humansTurn]->playCard(2);
 
 						std::cout << "\nPiece - ";
 						std::cin >> input;
@@ -236,7 +240,7 @@ int main() {
 		//If there is a piece to be captured
 		if (capturePiece != NULL) {
 			movePiece(capturePiece, captureLoc);
-			players[!humansTurn].setScore(capturePiece->getScore());
+			players[!humansTurn]->setScore(capturePiece->getScore());
 
 			//If a king has been captured
 			if (capturePiece->bit == king) {
@@ -260,10 +264,9 @@ int main() {
 			board[oldPos.y][oldPos.x][1] = ' '; //Resets the board
 		}
 
-		std::cout << "\n-------------------------------------------\n";
-
 		//Defines how to handle the next turn
 		nextTurn:
+			std::cout << "\n-------------------------------------------\n";
 			humansTurn = !humansTurn;
 			std::cout << (humansTurn ? "\nHumans " : "\nOrcz ") << "turn";
 			printBoard();
@@ -341,8 +344,8 @@ Piece* findPiece(Point spot, bool isHuman) {
 void printBoard() {
 	//Prints the scoreboard
 	std::cout << "\n\n\tScore";
-	std::cout << "\nHumans\t" << players[0].getScore();
-	std::cout << "\nOrcz\t" << players[1].getScore();
+	std::cout << "\nHumans\t" << players[0]->getScore();
+	std::cout << "\nOrcz\t" << players[1]->getScore();
 	std::cout << "\n\n  +---------------------------------------+\n"; //outputs the first line of the board
 
 																	  //Loops through the board
@@ -509,9 +512,6 @@ int empowerCard(Piece* piece) {
 */
 void reviveCard(Piece* res) {
 	bool human = res->isHuman;
-	Piece** pieces[2]; //All the pieces on the board
-	pieces[0] = players[0].getPieces();
-	pieces[1] = players[1].getPieces();
 	string stringSpot;
 	Point point; //Tracks the point of the piece
 	bool first2Rows = false; //Tracks whether the spot is in the first two rows
@@ -524,7 +524,7 @@ void reviveCard(Piece* res) {
 
 	//Loops while the user enters an available spaces
 	while (spotOccupied(point) || !first2Rows) {
-		std::cout << "\nSpot is unavailable. Let's try that again.\nSpot- ";
+		std::cout << "\nSpot is unavailable. Let's try that again.\n\nSpot- ";
 		std::cin >> stringSpot;
 
 		point = boardSpotToPoint(stringSpot);
